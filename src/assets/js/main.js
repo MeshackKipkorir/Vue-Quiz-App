@@ -1,0 +1,1 @@
+document.getElementById('timer').value = '<p>Timer</p>'
