@@ -1,71 +1,99 @@
 <template>
-    <div id="quiz-container">
-        <img id="logo-crown" src="@/assets/logo.png" alt="headsUP Crown" />
+    <div id="quiz-container"><img id="logo-crown" src="@/assets/logo.png" alt="headsUP Crown" />
         <div class="quiz-body">
             <div class="question">
                 <p>What is the fastest animal in the planet ?</p>
             </div>
             <div id="timer" class="timer">
-                <div class="base-timer">
-                    <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <div class="base-timer"><svg class="base-timer__svg" viewBox="0 0 100 100"
+                        xmlns="http://www.w3.org/2000/svg">
                         <g class="base-timer__circle">
                             <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45" />
                         </g>
-                    </svg>
-                    <span id="base-timer-label" class="base-timer__label">
-                        0:26
-                    </span>
+                    </svg><span id="base-timer-label" class="base-timer__label">{{time}}</span>
                 </div>
-
             </div>
+
             <div class="options-container">
-                <div class="option option-1">
-                    <div class="choice choice-1"><span class="choice-letter">A</span></div>
-                    <div class="choice-text">Turtle</div>
-                </div>
-
-                <div class="option option-2">
-                    <div class="choice choice-2"><span class="choice-letter">B</span></div>
-                    <div class="choice-text">Cheetah</div>
-                </div>
-
-                <div class="option option-3">
-                    <div class="choice choice-3"><span class="choice-letter">C</span></div>
-                    <div class="choice-text">Rabbit</div>
-                </div>
-
-                <div class="option option-4">
-                    <div class="choice choice-4"><span class="choice-letter">D</span></div>
-                    <div class="choice-text">Leopard</div>
-                </div>
+            <div class="option option-1">
+                <div class="choice choice-1"><span class="choice-letter">A</span></div>
+                <div class="choice-text">Turtle</div>
             </div>
+            <div class="option option-2">
+                <div class="choice choice-2"><span class="choice-letter">B</span></div>
+                <div class="choice-text">Cheetah</div>
+            </div>
+            <div class="option option-3">
+                <div class="choice choice-3"><span class="choice-letter">C</span></div>
+                <div class="choice-text">Rabbit</div>
+            </div>
+            <div class="option option-4">
+                <div class="choice choice-4"><span class="choice-letter">D</span></div>
+                <div class="choice-text">Leopard</div>
+            </div>
+        </div>
         </div>
     </div>
 </template>
-
 <script>
+    // import '../assets/js/main';
+
+    // Start with an initial value of 20 seconds
+    const TIME_LIMIT = 20;
+
+    // Initially, no time has passed, but this will count up
+    // and subtract from the TIME_LIMIT
+    let timePassed = 0;
+    let timeLeft = TIME_LIMIT;
+
+
     export default {
+
         name: "Quiz",
+        data(){
+        return{
+            time:0
+           }
+        },
         methods: {
             onload() {
+                this.showTimer();
+            },
+            formatTime(time) {
+                // The largest round integer less than or equal to the result of time divided being by 60.
+                const minutes = Math.floor(time / 60);
+                
+                // Seconds are the remainder of the time divided by 60 (modulus operator)
+                let seconds = time % 60;
+                
+                // If the value of seconds is less than 10, then display seconds with a leading zero
+                if (seconds < 10) {
+                seconds = `0${seconds}`;
+                }
+            
+                // The output in MM:SS format
+                return `${minutes}:${seconds}`;
+            },
+            startTimer(){
+               setInterval(() => {
+                    timePassed = timePassed + 1;
+                    timeLeft = TIME_LIMIT - timePassed;
+                    this.time = this.formatTime(timeLeft);
+                }, 1000);
 
-                document.getElementById('timer').innerHTML = `
-<div class="base-timer">
-  <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <g class="base-timer__circle">
-      <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45" />
-    </g>
-  </svg>
-  <span>
-    <!-- Remaining time label -->
-  </span>
-</div>
-`;
+                if(timeLeft == 0){
+                    this.time = 20;
+                }
             }
+            
+        },
+        mounted: function(){
+            this.startTimer()
         }
-    };
-</script>
+    }
 
+    ;
+</script>
 <style scoped>
     #quiz-container {
         margin: 1rem auto;
@@ -82,7 +110,7 @@
         left: 100px;
     }
 
-    .question{
+    .question {
         color: white;
         font-weight: 700;
         display: flex;
@@ -92,6 +120,7 @@
         top: 25px;
         font-size: 18px;
     }
+
     .options-container {
         position: relative;
         left: 133px;
@@ -172,32 +201,33 @@
         text-align: center;
     }
 
-    .timer{
+    .timer {
         position: absolute;
         left: 179px;
         top: 94px;
     }
+
     /* Sets the containers height and width */
     .base-timer {
-    height: 150px;
-    width: 150px;
+        height: 150px;
+        width: 150px;
     }
 
     /* Removes SVG styling that would hide the time label */
     .base-timer__circle {
-    fill: none;
-    stroke: none;
+        fill: none;
+        stroke: none;
     }
 
     /* The SVG path that displays the timer's progress */
     .base-timer__path-elapsed {
-    stroke-width: 7px;
-    stroke: rgb(228, 68, 68);
+        stroke-width: 7px;
+        stroke: rgb(228, 68, 68);
     }
 
     .base-timer__label {
         position: absolute;
-        color:white;
+        color: white;
         width: 150px;
         height: 150px;
         top: 0;
@@ -206,7 +236,7 @@
         justify-content: center;
         font-size: 48px;
         font-weight: 600;
-}
+    }
 
     #logo-crown {
         display: block;
